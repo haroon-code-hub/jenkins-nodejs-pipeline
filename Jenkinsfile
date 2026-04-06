@@ -1,26 +1,21 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'node22'
+    }
+
     stages {
         stage('Hello') {
             steps {
                 echo 'Jenkins pipeline is running'
             }
         }
-        stage('Checkout'){
-            steps{
-                checkout scm
-            }
-        }
-         stage('Debug Environment') {
+
+        stage('Check Node and npm') {
             steps {
-                sh 'pwd'
-                sh 'ls -la'
-                sh 'echo $PATH'
-                sh 'which node || true'
-                sh 'which npm || true'
-                sh 'node --version || true'
-                sh 'npm --version || true'
+                sh 'node --version'
+                sh 'npm --version'
             }
         }
     }
