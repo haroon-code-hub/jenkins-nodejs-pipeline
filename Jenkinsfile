@@ -53,18 +53,37 @@ pipeline {
             }
         }
         stage('Push Docker image') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push ${DOCKER_IMAGE}:${APP_VERSION}
+                    '''
+                }
+            }
+    }
+    stage('Commit version to Git') {
         steps {
             withCredentials([usernamePassword(
-                credentialsId: 'docker-hub-creds',
-                usernameVariable: 'DOCKER_USER',
-                passwordVariable: 'DOCKER_PASS'
+                credentialsId: 'git-credentials',
+                usernameVariable: 'GIT_USER',
+                passwordVariable: 'GIT_PASS'
             )]) {
                 sh '''
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                    docker push ${DOCKER_IMAGE}:${APP_VERSION}
+                    git config user.email "jenkins@local"
+                    git config user.name "Jenkins"
+
+                    git add package.json package-lock.json
+                    git commit -m "CI: bump version to ${APP_VERSION}"
+
+                    git push https://${GIT_USER}:${GIT_PASS}@github.com/haroon-code-hub/jenkins-nodejs-pipeline.git HEAD:main
                 '''
             }
         }
-    }
+}
     }
 }
