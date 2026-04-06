@@ -12,10 +12,15 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Check Node and npm') {
+         stage('Debug Environment') {
             steps {
-                sh 'node --version'
-                sh 'npm --version'
+                sh 'pwd'
+                sh 'ls -la'
+                sh 'echo $PATH'
+                sh 'which node || true'
+                sh 'which npm || true'
+                sh 'node --version || true'
+                sh 'npm --version || true'
             }
         }
     }
