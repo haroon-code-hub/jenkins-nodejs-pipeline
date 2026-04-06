@@ -44,5 +44,10 @@ pipeline {
                 echo "Application version: ${env.APP_VERSION}"
             }
         }
+        stage('Build Docker image') {
+            steps {
+                sh "docker build -t jenkins-nodejs-pipeline:${env.APP_VERSION} ."
+            }
+        }
     }
 }
