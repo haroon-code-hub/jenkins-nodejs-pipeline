@@ -17,5 +17,6 @@ pipeline {
                 sh 'node --version'
                 sh 'npm --version'
             }
+        }
     }
 }
