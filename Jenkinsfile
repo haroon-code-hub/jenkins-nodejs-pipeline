@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    environment {
+    DOCKER_IMAGE = 'haroon-code-hub/jenkins-nodejs-pipeline'
+    }
     tools {
         nodejs 'node20'
     }
@@ -46,8 +48,23 @@ pipeline {
         }
         stage('Build Docker image') {
             steps {
-                sh "docker build -t jenkins-nodejs-pipeline:${env.APP_VERSION} ."
+                    sh "docker build -t ${DOCKER_IMAGE}:${APP_VERSION} ."
+
             }
         }
+        stage('Push Docker image') {
+        steps {
+            withCredentials([usernamePassword(
+                credentialsId: 'docker-hub-creds',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASS'
+            )]) {
+                sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    docker push ${DOCKER_IMAGE}:${APP_VERSION}
+                '''
+            }
+        }
+    }
     }
 }
