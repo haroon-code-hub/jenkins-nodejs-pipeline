@@ -23,9 +23,14 @@ pipeline {
                 sh 'npm install'
             }
         }
-            stage('Run tests') {
+        stage('Run tests') {
             steps {
                 sh 'npm test'
+            }
+        }
+        stage('Increment version') {
+            steps {
+                sh 'npm version minor --no-git-tag-version'
             }
         }
     }
