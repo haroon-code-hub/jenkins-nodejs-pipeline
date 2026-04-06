@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-    DOCKER_IMAGE = 'haroon-code-hub/jenkins-nodejs-pipeline'
+    DOCKER_IMAGE = 'saeedha/jenkins-nodejs-pipeline'
     }
     tools {
         nodejs 'node20'
