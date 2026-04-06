@@ -33,5 +33,16 @@ pipeline {
                 sh 'npm version minor --no-git-tag-version'
             }
         }
+        stage('Read version') {
+            steps {
+                script {
+                    env.APP_VERSION = sh(
+                        script: "node -p \"require('./package.json').version\"",
+                        returnStdout: true
+                    ).trim()
+                }
+                echo "Application version: ${env.APP_VERSION}"
+            }
+        }
     }
 }
